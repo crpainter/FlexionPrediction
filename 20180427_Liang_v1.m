@@ -91,8 +91,8 @@ sub1FastGammaBand = filtfilt(fastGammaCoeffs, 1, ecogData1);
 % Inputs into feature and X matrix calculations
 numChannels = 62; % for subject 1
 sr = 1000; % sample rate
-winLen = 50/1e3; % 50ms window
-winDisp = 50/1e3; % 50ms displacement (0ms of overlap)
+winLen = 100/1e3; % 100ms window
+winDisp = 50/1e3; % 50ms displacement
 N = 3; % number of time bins before
 
 % Calculate training features for each band
@@ -126,7 +126,7 @@ testX1 = CalcXMatrixLiang(sub1SubBandFeatT, sub1GammaBandFeatT, sub1FastGammaBan
 
 % Train beta coefficients using training data and make predictions using
 % testing data for all 5 fingers simultaneously
-sub1Beta = mldivide((trainX1'*trainX1),(trainX1'*dsDG1((N):end,:)));
+sub1Beta = mldivide((trainX1'*trainX1),(trainX1'*dsDG1((N+1):end,:)));
 yhat1 = testX1*sub1Beta;
 
 %% Subject 1 (6/6): interpolate and pad predictions to produce final output for subject 1
@@ -141,11 +141,11 @@ sub1Fing3 = spline(1:lenPredictions, yhat1(:,3), 0:1/50:(lenPredictions-1/50));
 sub1Fing4 = spline(1:lenPredictions, yhat1(:,4), 0:1/50:(lenPredictions-1/50));
 sub1Fing5 = spline(1:lenPredictions, yhat1(:,5), 0:1/50:(lenPredictions-1/50));
 % Add padding to produce final output for subject 1
-sub1Fing1 = [zeros(1,(N-1)*50) sub1Fing1];
-sub1Fing2 = [zeros(1,(N-1)*50) sub1Fing2];
-sub1Fing3 = [zeros(1,(N-1)*50) sub1Fing3];
-sub1Fing4 = [zeros(1,(N-1)*50) sub1Fing4];
-sub1Fing5 = [zeros(1,(N-1)*50) sub1Fing5];
+sub1Fing1 = [zeros(1,(N)*50) sub1Fing1];
+sub1Fing2 = [zeros(1,(N)*50) sub1Fing2];
+sub1Fing3 = [zeros(1,(N)*50) sub1Fing3];
+sub1Fing4 = [zeros(1,(N)*50) sub1Fing4];
+sub1Fing5 = [zeros(1,(N)*50) sub1Fing5];
 
 
 
@@ -164,8 +164,8 @@ sub2FastGammaBand = filtfilt(fastGammaCoeffs, 1, ecogData2);
 % Inputs into feature and X matrix calculations
 numChannels = 48; % for subject 2
 sr = 1000; % sample rate
-winLen = 50/1e3; % 50ms window
-winDisp = 50/1e3; % 50ms displacement (0ms of overlap)
+winLen = 100/1e3; % 100ms window
+winDisp = 50/1e3; % 50ms displacement
 N = 3; % number of time bins before
 
 % Calculate training features for each band
@@ -199,7 +199,7 @@ testX2 = CalcXMatrixLiang(sub2SubBandFeatT, sub2GammaBandFeatT, sub2FastGammaBan
 
 % Train beta coefficients using training data and make predictions using
 % testing data for all 5 fingers simultaneously
-sub2Beta = mldivide((trainX2'*trainX2),(trainX2'*dsDG2((N):end,:)));
+sub2Beta = mldivide((trainX2'*trainX2),(trainX2'*dsDG2((N+1):end,:)));
 yhat2 = testX2*sub2Beta;
 
 %% Subject 2 (6/6): interpolate and pad predictions to produce final output for subject 2
@@ -214,11 +214,11 @@ sub2Fing3 = spline(1:lenPredictions, yhat2(:,3), 0:1/50:(lenPredictions-1/50));
 sub2Fing4 = spline(1:lenPredictions, yhat2(:,4), 0:1/50:(lenPredictions-1/50));
 sub2Fing5 = spline(1:lenPredictions, yhat2(:,5), 0:1/50:(lenPredictions-1/50));
 % Add padding to produce final output for subject 2
-sub2Fing1 = [zeros(1,(N-1)*50) sub2Fing1];
-sub2Fing2 = [zeros(1,(N-1)*50) sub2Fing2];
-sub2Fing3 = [zeros(1,(N-1)*50) sub2Fing3];
-sub2Fing4 = [zeros(1,(N-1)*50) sub2Fing4];
-sub2Fing5 = [zeros(1,(N-1)*50) sub2Fing5];
+sub2Fing1 = [zeros(1,(N)*50) sub2Fing1];
+sub2Fing2 = [zeros(1,(N)*50) sub2Fing2];
+sub2Fing3 = [zeros(1,(N)*50) sub2Fing3];
+sub2Fing4 = [zeros(1,(N)*50) sub2Fing4];
+sub2Fing5 = [zeros(1,(N)*50) sub2Fing5];
 
 
 
@@ -240,8 +240,8 @@ sub3FastGammaBand = filtfilt(fastGammaCoeffs, 1, ecogData3);
 % Inputs into feature and X matrix calculations
 numChannels = 64; % for subject 3
 sr = 1000; % sample rate
-winLen = 50/1e3; % 50ms window
-winDisp = 50/1e3; % 50ms displacement (0ms of overlap)
+winLen = 100/1e3; % 100ms window
+winDisp = 50/1e3; % 50ms displacement
 N = 3; % number of time bins before
 
 % Calculate training features for each band
@@ -275,7 +275,7 @@ testX3 = CalcXMatrixLiang(sub3SubBandFeatT, sub3GammaBandFeatT, sub3FastGammaBan
 
 % Train beta coefficients using training data and make predictions using
 % testing data for all 5 fingers simultaneously
-sub3Beta = mldivide((trainX3'*trainX3),(trainX3'*dsDG3((N):end,:)));
+sub3Beta = mldivide((trainX3'*trainX3),(trainX3'*dsDG3((N+1):end,:)));
 yhat3 = testX3*sub3Beta;
 
 %% Subject 3 (6/6): interpolate and pad predictions to produce final output for subject 3
@@ -290,11 +290,11 @@ sub3Fing3 = spline(1:lenPredictions, yhat3(:,3), 0:1/50:(lenPredictions-1/50));
 sub3Fing4 = spline(1:lenPredictions, yhat3(:,4), 0:1/50:(lenPredictions-1/50));
 sub3Fing5 = spline(1:lenPredictions, yhat3(:,5), 0:1/50:(lenPredictions-1/50));
 % Add padding to produce final output for subject 3
-sub3Fing1 = [zeros(1,(N-1)*50) sub3Fing1];
-sub3Fing2 = [zeros(1,(N-1)*50) sub3Fing2];
-sub3Fing3 = [zeros(1,(N-1)*50) sub3Fing3];
-sub3Fing4 = [zeros(1,(N-1)*50) sub3Fing4];
-sub3Fing5 = [zeros(1,(N-1)*50) sub3Fing5];
+sub3Fing1 = [zeros(1,(N)*50) sub3Fing1];
+sub3Fing2 = [zeros(1,(N)*50) sub3Fing2];
+sub3Fing3 = [zeros(1,(N)*50) sub3Fing3];
+sub3Fing4 = [zeros(1,(N)*50) sub3Fing4];
+sub3Fing5 = [zeros(1,(N)*50) sub3Fing5];
 
 
 
