@@ -286,17 +286,57 @@ sub3Fing5 = [zeros(1,N*50) sub3Fing5];
 
 
 
+%% Moving average (post-processing)
+% Take the moving average in order to reduce some of the noise in the
+% predictions
+
+sr = 1000; % sample rate
+winLen = 150/1e3; % 100ms window
+winSamples = winLen*sr; % number of samples in window
+
+% filter coefficient vectors
+a = 1;
+b = ones(1,winSamples)/winSamples;
+
+% filter all finger data
+% Subject 1
+sub1Fing1Filtered = filtfilt(b,a,sub1Fing1);
+sub1Fing2Filtered = filtfilt(b,a,sub1Fing2);
+sub1Fing3Filtered = filtfilt(b,a,sub1Fing3);
+sub1Fing4Filtered = filtfilt(b,a,sub1Fing4);
+sub1Fing5Filtered = filtfilt(b,a,sub1Fing5);
+% Subject 2
+sub2Fing1Filtered = filtfilt(b,a,sub2Fing1);
+sub2Fing2Filtered = filtfilt(b,a,sub2Fing2);
+sub2Fing3Filtered = filtfilt(b,a,sub2Fing3);
+sub2Fing4Filtered = filtfilt(b,a,sub2Fing4);
+sub2Fing5Filtered = filtfilt(b,a,sub2Fing5);
+% Subject 3
+sub3Fing1Filtered = filtfilt(b,a,sub3Fing1);
+sub3Fing2Filtered = filtfilt(b,a,sub3Fing2);
+sub3Fing3Filtered = filtfilt(b,a,sub3Fing3);
+sub3Fing4Filtered = filtfilt(b,a,sub3Fing4);
+sub3Fing5Filtered = filtfilt(b,a,sub3Fing5);
+
+
+
+
+
+
 
 %% Combine output from three subjects into one variable (predicted_dg)
 
-predicted_dg = {};
-predicted_dg{1} = [sub1Fing1' sub1Fing2' sub1Fing3' sub1Fing4' sub1Fing5'];
-predicted_dg{2} = [sub2Fing1' sub2Fing2' sub2Fing3' sub2Fing4' sub2Fing5'];
-predicted_dg{3} = [sub3Fing1' sub3Fing2' sub3Fing3' sub3Fing4' sub3Fing5'];
-predicted_dg = predicted_dg';
+predicted_dgSVM = {};
+predicted_dgSVM{1} = [sub1Fing1Filtered' sub1Fing2Filtered' sub1Fing3Filtered'...
+    sub1Fing4Filtered' sub1Fing5Filtered'];
+predicted_dgSVM{2} = [sub2Fing1Filtered' sub2Fing2Filtered' sub2Fing3Filtered'...
+    sub2Fing4Filtered' sub2Fing5Filtered'];
+predicted_dgSVM{3} = [sub3Fing1Filtered' sub3Fing2Filtered' sub3Fing3Filtered'...
+    sub3Fing4Filtered' sub3Fing5Filtered'];
+predicted_dgSVM = predicted_dgSVM';
 
 % Save predicted_dg to .mat file for submission
-save('readyPlayerOne_predictions.mat','predicted_dg');
+save('readyPlayerOne_predictions_SVM.mat','predicted_dgSVM');
 
 
 %% Save training features and X matrices
