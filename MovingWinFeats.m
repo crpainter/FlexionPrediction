@@ -11,7 +11,7 @@ function features = MovingWinFeats(x, fs, winLen, winDisp, featFn)
     % features = a vector where each entry is the calculated feature
     
     xLen = length(x); % length of signal
-    numWins = floor(((xLen/fs)-(winLen-winDisp))/winDisp); % max number of full windows
+    numWins = ceil(((xLen/fs)-(winLen-winDisp))/winDisp); % max number of full windows
 
     samplesWin = winLen * fs; % number of samples in each window
     samplesDisp = winDisp * fs; % number of samples in each displacement window
