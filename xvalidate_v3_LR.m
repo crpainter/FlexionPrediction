@@ -28,13 +28,14 @@ winDisp = 50/1e3; % 50ms displacement
 N = 3; % number of time bins before
 
 % For training set, calculate features and X matrix
-[xv1TrainFeat1, xv1TrainFeat2, xv1TrainFeat3, xv1TrainFeat4, xv1TrainFeat5, xv1TrainFeat6] = ...
-    CalcFeatures(xvTrainingECOG1, numChannels, sr, winLen, winDisp);
+[xv1TrainFeat1, xv1TrainFeat2, xv1TrainFeat3, xv1TrainFeat4, xv1TrainFeat5,...
+    xv1TrainFeat6] = CalcFeatures(xvTrainingECOG1, numChannels, sr, winLen, winDisp);
 xvTrainX1 = CalcXMatrix(xv1TrainFeat1, xv1TrainFeat2, xv1TrainFeat3, xv1TrainFeat4, ...
     xv1TrainFeat5, xv1TrainFeat6, N, numChannels);
 
 % For testing set, calculate features and X matrix
-[xv1TestFeat1, xv1TestFeat2, xv1TestFeat3, xv1TestFeat4, xv1TestFeat5, xv1TestFeat6] = ...
+[xv1TestFeat1, xv1TestFeat2, xv1TestFeat3, xv1TestFeat4, xv1TestFeat5, ...
+    xv1TestFeat6] = ...
     CalcFeatures(xvTestingECOG1, numChannels, sr, winLen, winDisp);
 xvTestX1 = CalcXMatrix(xv1TestFeat1, xv1TestFeat2, xv1TestFeat3, xv1TestFeat4, ...
     xv1TestFeat5, xv1TestFeat6, N, numChannels);
@@ -93,16 +94,18 @@ winDisp = 50/1e3; % 50ms displacement
 N = 3; % number of time bins before
 
 % For training set, calculate features and X matrix
-[xv2TrainFeat1, xv2TrainFeat2, xv2TrainFeat3, xv2TrainFeat4, xv2TrainFeat5, xv2TrainFeat6] = ...
+[xv2TrainFeat1, xv2TrainFeat2, xv2TrainFeat3, xv2TrainFeat4, xv2TrainFeat5, ...
+    xv2TrainFeat6, xv2TrainFeat7] = ...
     CalcFeatures(xvTrainingECOG2, numChannels, sr, winLen, winDisp);
 xvTrainX2 = CalcXMatrix(xv2TrainFeat1, xv2TrainFeat2, xv2TrainFeat3, xv2TrainFeat4, ...
-    xv2TrainFeat5, xv2TrainFeat6, N, numChannels);
+    xv2TrainFeat5, xv2TrainFeat6, xv2TrainFeat7, N, numChannels);
 
 % For testing set, calculate features and X matrix
-[xv2TestFeat1, xv2TestFeat2, xv2TestFeat3, xv2TestFeat4, xv2TestFeat5, xv2TestFeat6] = ...
+[xv2TestFeat1, xv2TestFeat2, xv2TestFeat3, xv2TestFeat4, xv2TestFeat5, ...
+    xv2TestFeat6, xv2TestFeat7] = ...
     CalcFeatures(xvTestingECOG2, numChannels, sr, winLen, winDisp);
 xvTestX2 = CalcXMatrix(xv2TestFeat1, xv2TestFeat2, xv2TestFeat3, xv2TestFeat4, ...
-    xv2TestFeat5, xv2TestFeat6, N, numChannels);
+    xv2TestFeat5, xv2TestFeat6, xv2TestFeat7, N, numChannels);
 
 % Train linear model and make predictions
 xv2Beta = mldivide((xvTrainX2'*xvTrainX2),(xvTrainX2'*xvTrainingDS2((N+1):end,:)));
@@ -158,16 +161,18 @@ winDisp = 50/1e3; % 50ms displacement
 N = 3; % number of time bins before
 
 % For training set, calculate features and X matrix
-[xv3TrainFeat1, xv3TrainFeat2, xv3TrainFeat3, xv3TrainFeat4, xv3TrainFeat5, xv3TrainFeat6] = ...
+[xv3TrainFeat1, xv3TrainFeat2, xv3TrainFeat3, xv3TrainFeat4, xv3TrainFeat5, ...
+    xv3TrainFeat6, xv3TrainFeat7] = ...
     CalcFeatures(xvTrainingECOG3, numChannels, sr, winLen, winDisp);
 xvTrainX3 = CalcXMatrix(xv3TrainFeat1, xv3TrainFeat2, xv3TrainFeat3, xv3TrainFeat4, ...
-    xv3TrainFeat5, xv3TrainFeat6, N, numChannels);
+    xv3TrainFeat5, xv3TrainFeat6, xv3TrainFeat7, N, numChannels);
 
 % For testing set, calculate features and X matrix
-[xv3TestFeat1, xv3TestFeat2, xv3TestFeat3, xv3TestFeat4, xv3TestFeat5, xv3TestFeat6] = ...
+[xv3TestFeat1, xv3TestFeat2, xv3TestFeat3, xv3TestFeat4, xv3TestFeat5, ...
+    xv3TestFeat6, xv3TestFeat7] = ...
     CalcFeatures(xvTestingECOG3, numChannels, sr, winLen, winDisp);
 xvTestX3 = CalcXMatrix(xv3TestFeat1, xv3TestFeat2, xv3TestFeat3, xv3TestFeat4, ...
-    xv3TestFeat5, xv3TestFeat6, N, numChannels);
+    xv3TestFeat5, xv3TestFeat6, xv3TestFeat7, N, numChannels);
 
 % Train linear model and make predictions
 xv3Beta = mldivide((xvTrainX3'*xvTrainX3),(xvTrainX3'*xvTrainingDS3((N+1):end,:)));
@@ -209,3 +214,51 @@ xv3Corr = mean([xv3Fing1Corr xv3Fing2Corr xv3Fing3Corr xv3Fing5Corr])
 xvCorr = mean([xv3Fing1Corr xv3Fing2Corr xv3Fing3Corr xv3Fing5Corr xv2Fing1Corr...
     xv2Fing2Corr xv2Fing3Corr xv2Fing5Corr xv1Fing1Corr xv1Fing2Corr ...
     xv1Fing3Corr xv1Fing5Corr])
+
+
+
+%% Plot original versus predicted
+
+% Subject 1 finger 1
+figure
+plot(xv1Fing2)
+hold on
+plot(xvTestingDataGlove1(:,2))
+hold off
+
+
+%% 
+
+subplot(5,1,1)
+plot(0:12/200:(24-12/200),dsDG1(1:400,1))
+xlim([0 24])
+ax = gca;
+ax.XTick = [0 2 4 6 8 10 12 14 16 18 20 22 24];
+subplot(5,1,2)
+plot(0:12/200:(24-12/200),dsDG1(1:400,2))
+xlim([0 24])
+ax = gca;
+ax.XTick = [0 2 4 6 8 10 12 14 16 18 20 22 24];
+subplot(5,1,3)
+plot(0:12/200:(24-12/200),dsDG1(1:400,3))
+xlim([0 24])
+ax = gca;
+ax.XTick = [0 2 4 6 8 10 12 14 16 18 20 22 24];
+subplot(5,1,4)
+plot(0:12/200:(24-12/200),dsDG1(1:400,4))
+xlim([0 24])
+ax = gca;
+ax.XTick = [0 2 4 6 8 10 12 14 16 18 20 22 24];
+subplot(5,1,5)
+plot(0:12/200:(24-12/200),dsDG1(1:400,5))
+xlim([0 24])
+ax = gca;
+ax.XTick = [0 2 4 6 8 10 12 14 16 18 20 22 24];
+
+
+%%
+plot(0:1/50:(lenPredictions-1/50),spline(1:lenPredictions, yhat3Fing1, 0:1/50:(lenPredictions-1/50)))
+hold on
+plot(yhat3Fing1)
+hold off
+legend('Splined','Original')

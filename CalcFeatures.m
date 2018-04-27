@@ -43,19 +43,32 @@ function [feat1,feat2,feat3,feat4,feat5,feat6] = CalcFeatures(ecogData, numChann
     
         % Compute spectral features for this channel for each frequency band
         [s, f, t] = spectrogram(ecogData(:,i), winSamples, overlapSamples, 1:1:sr, sr);
-        result1 = mean(abs(s(5:15,:))); % feature 2
-        result2 = mean(abs(s(20:25,:))); % feature 3
-        result3 = mean(abs(s(75:115,:))); % feature 4
-        result4 = mean(abs(s(125:160,:))); % feature 5
-        result5 = mean(abs(s(160:175,:))); % feature 6
+        result2 = mean(abs(s(5:15,:))); % feature 2
+        result3 = mean(abs(s(20:25,:))); % feature 3
+        result4 = mean(abs(s(75:115,:))); % feature 4
+        result5 = mean(abs(s(125:160,:))); % feature 5
+        result6 = mean(abs(s(160:175,:))); % feature 6
+        %result7 = sum(abs(s(100:200,:)).^2); % feature 7
+        %result8 = sum(abs(s(75:115,:)).^2); % feature 8
 
         % Add result to each feature matrix
-        feat2 = [feat2; result1];
-        feat3 = [feat3; result2];
-        feat4 = [feat4; result3];
-        feat5 = [feat5; result4];
-        feat6 = [feat6; result5];
+        feat2 = [feat2; result2];
+        feat3 = [feat3; result3];
+        feat4 = [feat4; result4];
+        feat5 = [feat5; result5];
+        feat6 = [feat6; result6];
+        %feat7 = [feat7; result7];
+        %feat8 = [feat8; result8];
     
     end
+%     
+%     % Feature 7: Sum squared voltage in each window
+%     SumSqVoltage = @(signal) sum(signal.^2); % function
+%     for i = 1:numChannels    
+%         % Use MovingWinFeats to calculate SumSqVoltage for each channel for
+%         % this subject
+%         result1 = MovingWinFeats(ecogData(:,i),sr,winLen,winDisp,SumSqVoltage);
+%         feat7 = [feat7; result1];  
+%     end
     
 end

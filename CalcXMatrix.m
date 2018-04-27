@@ -10,7 +10,7 @@
 %
 % Output is: X matrix
 
-function x = CalcXMatrix(feat1, feat2, feat3, feat4, feat5, feat6, nTimeBins, numChannels)
+function x = CalcXMatrix(feat1,feat2,feat3,feat4,feat5,feat6,nTimeBins,numChannels)
 
     N = nTimeBins; % number of time bins before
     M = size(feat1,2)-N+1; % number of rows for X matrix
@@ -33,6 +33,8 @@ function x = CalcXMatrix(feat1, feat2, feat3, feat4, feat5, feat6, nTimeBins, nu
             currRow = [currRow feat4(j,i:(i+2))];
             currRow = [currRow feat5(j,i:(i+2))];
             currRow = [currRow feat6(j,i:(i+2))];
+            %currRow = [currRow feat7(j,i:(i+2))];
+            %currRow = [currRow feat8(j,i:(i+2))];
 
         end
 
