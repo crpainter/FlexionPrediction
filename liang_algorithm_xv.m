@@ -34,8 +34,8 @@ xv1FastGammaBand = filtfilt(fastGammaCoeffs, 1, xvTrainingECOG1);
 % Inputs into feature and X matrix calculations
 numChannels = 62; % for subject 1
 sr = 1000; % sample rate
-winLen = 50/1e3; % 50ms window
-winDisp = 50/1e3; % 50ms displacement (0ms of overlap)
+winLen = 100/1e3; % 100ms window
+winDisp = 50/1e3; % 50ms displacement
 N = 3; % number of time bins before
 
 % Calculate training features for each band
@@ -62,7 +62,7 @@ xvTestX1 = CalcXMatrixLiang(xv1SubBandFeatT, xv1GammaBandFeatT, xv1FastGammaBand
     N, numChannels);
 
 % Train linear model and make predictions
-xv1Beta = mldivide((xvTrainX1'*xvTrainX1),(xvTrainX1'*xvTrainingDS1((N):end,:)));
+xv1Beta = mldivide((xvTrainX1'*xvTrainX1),(xvTrainX1'*xvTrainingDS1((N+1):end,:)));
 xvYHat1 = xvTestX1*xv1Beta;
 
 % Interpolate and pad predictions to get them to be the right length to
@@ -76,11 +76,11 @@ xv1Fing3 = spline(1:lenPredictions, xvYHat1(:,3), 0:1/50:(lenPredictions-1/50));
 xv1Fing4 = spline(1:lenPredictions, xvYHat1(:,4), 0:1/50:(lenPredictions-1/50));
 xv1Fing5 = spline(1:lenPredictions, xvYHat1(:,5), 0:1/50:(lenPredictions-1/50));
 % Add padding
-xv1Fing1 = [zeros(1,(N-1)*50) xv1Fing1];
-xv1Fing2 = [zeros(1,(N-1)*50) xv1Fing2];
-xv1Fing3 = [zeros(1,(N-1)*50) xv1Fing3];
-xv1Fing4 = [zeros(1,(N-1)*50) xv1Fing4];
-xv1Fing5 = [zeros(1,(N-1)*50) xv1Fing5];
+xv1Fing1 = [zeros(1,(N)*50) xv1Fing1];
+xv1Fing2 = [zeros(1,(N)*50) xv1Fing2];
+xv1Fing3 = [zeros(1,(N)*50) xv1Fing3];
+xv1Fing4 = [zeros(1,(N)*50) xv1Fing4];
+xv1Fing5 = [zeros(1,(N)*50) xv1Fing5];
 
 % Compute correlation between predicted values and actual values
 xv1Fing1Corr = corr(xv1Fing1', xvTestingDataGlove1(:,1))
@@ -115,8 +115,8 @@ xv2FastGammaBand = filtfilt(fastGammaCoeffs, 1, xvTrainingECOG2);
 % Inputs into feature and X matrix calculations
 numChannels = 48; % for subject 2
 sr = 1000; % sample rate
-winLen = 50/1e3; % 50ms window
-winDisp = 50/1e3; % 50ms displacement (0ms of overlap)
+winLen = 100/1e3; % 100ms window
+winDisp = 50/1e3; % 50ms displacement
 N = 3; % number of time bins before
 
 % Calculate training features for each band
@@ -143,7 +143,7 @@ xvTestX2 = CalcXMatrixLiang(xv2SubBandFeatT, xv2GammaBandFeatT, xv2FastGammaBand
     N, numChannels);
 
 % Train linear model and make predictions
-xv2Beta = mldivide((xvTrainX2'*xvTrainX2),(xvTrainX2'*xvTrainingDS2((N):end,:)));
+xv2Beta = mldivide((xvTrainX2'*xvTrainX2),(xvTrainX2'*xvTrainingDS2((N+1):end,:)));
 xvYHat2 = xvTestX2*xv2Beta;
 
 % Interpolate and pad predictions to get them to be the right length to
@@ -157,11 +157,11 @@ xv2Fing3 = spline(1:lenPredictions, xvYHat2(:,3), 0:1/50:(lenPredictions-1/50));
 xv2Fing4 = spline(1:lenPredictions, xvYHat2(:,4), 0:1/50:(lenPredictions-1/50));
 xv2Fing5 = spline(1:lenPredictions, xvYHat2(:,5), 0:1/50:(lenPredictions-1/50));
 % Add padding
-xv2Fing1 = [zeros(1,(N-1)*50) xv2Fing1];
-xv2Fing2 = [zeros(1,(N-1)*50) xv2Fing2];
-xv2Fing3 = [zeros(1,(N-1)*50) xv2Fing3];
-xv2Fing4 = [zeros(1,(N-1)*50) xv2Fing4];
-xv2Fing5 = [zeros(1,(N-1)*50) xv2Fing5];
+xv2Fing1 = [zeros(1,(N)*50) xv2Fing1];
+xv2Fing2 = [zeros(1,(N)*50) xv2Fing2];
+xv2Fing3 = [zeros(1,(N)*50) xv2Fing3];
+xv2Fing4 = [zeros(1,(N)*50) xv2Fing4];
+xv2Fing5 = [zeros(1,(N)*50) xv2Fing5];
 
 % Compute correlation between predicted values and actual values
 xv2Fing1Corr = corr(xv2Fing1', xvTestingDataGlove2(:,1))
@@ -196,8 +196,8 @@ xv3FastGammaBand = filtfilt(fastGammaCoeffs, 1, xvTrainingECOG3);
 % Inputs into feature and X matrix calculations
 numChannels = 64; % for subject 3
 sr = 1000; % sample rate
-winLen = 50/1e3; % 50ms window
-winDisp = 50/1e3; % 50ms displacement (0ms of overlap)
+winLen = 100/1e3; % 100ms window
+winDisp = 50/1e3; % 50ms displacement
 N = 3; % number of time bins before
 
 % Calculate training features for each band
@@ -224,7 +224,7 @@ xvTestX3 = CalcXMatrixLiang(xv3SubBandFeatT, xv3GammaBandFeatT, xv3FastGammaBand
     N, numChannels);
 
 % Train linear model and make predictions
-xv3Beta = mldivide((xvTrainX3'*xvTrainX3),(xvTrainX3'*xvTrainingDS3((N):end,:)));
+xv3Beta = mldivide((xvTrainX3'*xvTrainX3),(xvTrainX3'*xvTrainingDS3((N+1):end,:)));
 xvYHat3 = xvTestX3*xv3Beta;
 
 % Interpolate and pad predictions to get them to be the right length to
@@ -238,11 +238,11 @@ xv3Fing3 = spline(1:lenPredictions, xvYHat3(:,3), 0:1/50:(lenPredictions-1/50));
 xv3Fing4 = spline(1:lenPredictions, xvYHat3(:,4), 0:1/50:(lenPredictions-1/50));
 xv3Fing5 = spline(1:lenPredictions, xvYHat3(:,5), 0:1/50:(lenPredictions-1/50));
 % Add padding
-xv3Fing1 = [zeros(1,(N-1)*50) xv3Fing1];
-xv3Fing2 = [zeros(1,(N-1)*50) xv3Fing2];
-xv3Fing3 = [zeros(1,(N-1)*50) xv3Fing3];
-xv3Fing4 = [zeros(1,(N-1)*50) xv3Fing4];
-xv3Fing5 = [zeros(1,(N-1)*50) xv3Fing5];
+xv3Fing1 = [zeros(1,(N)*50) xv3Fing1];
+xv3Fing2 = [zeros(1,(N)*50) xv3Fing2];
+xv3Fing3 = [zeros(1,(N)*50) xv3Fing3];
+xv3Fing4 = [zeros(1,(N)*50) xv3Fing4];
+xv3Fing5 = [zeros(1,(N)*50) xv3Fing5];
 
 % Compute correlation between predicted values and actual values
 xv3Fing1Corr = corr(xv3Fing1', xvTestingDataGlove3(:,1))
