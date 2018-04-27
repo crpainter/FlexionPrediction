@@ -22,14 +22,14 @@ xvTestingDS1 = dsDG1(3001:end,:); % downsampled data glove data
 
 % Load filters for sub bands (1-60Hz), gamma bands (60-100Hz), and fast
 % gamma bands (100-200Hz)
-load('/Users/pooja/Dropbox/1-PENN/WHARTON/2018-SPRING/BE521/final-project/filters/sub.mat');
-load('/Users/pooja/Dropbox/1-PENN/WHARTON/2018-SPRING/BE521/final-project/filters/gamma.mat');
-load('/Users/pooja/Dropbox/1-PENN/WHARTON/2018-SPRING/BE521/final-project/filters/fastGamma.mat');
+load('/Users/pooja/Dropbox/1-PENN/WHARTON/2018-SPRING/BE521/final-project/filters/sub2.mat');
+load('/Users/pooja/Dropbox/1-PENN/WHARTON/2018-SPRING/BE521/final-project/filters/gamma2.mat');
+load('/Users/pooja/Dropbox/1-PENN/WHARTON/2018-SPRING/BE521/final-project/filters/fastGamma2.mat');
 
 % Filter training data into three frequency bands
-xv1SubBand = filtfilt(subCoeffs, 1, xvTrainingECOG1);
-xv1GammaBand = filtfilt(gammaCoeffs, 1, xvTrainingECOG1);
-xv1FastGammaBand = filtfilt(fastGammaCoeffs, 1, xvTrainingECOG1);
+xv1SubBand = filtfilt(subCoeffs2, 1, xvTrainingECOG1);
+xv1GammaBand = filtfilt(gammaCoeffs2, 1, xvTrainingECOG1);
+xv1FastGammaBand = filtfilt(fastGammaCoeffs2, 1, xvTrainingECOG1);
 
 % Inputs into feature and X matrix calculations
 numChannels = 62; % for subject 1
@@ -44,13 +44,13 @@ xv1GammaBandFeat = CalcFeaturesLiang(xv1GammaBand, numChannels, sr, winLen, winD
 xv1FastGammaBandFeat = CalcFeaturesLiang(xv1FastGammaBand, numChannels, sr, winLen, winDisp);
 
 % Calculate training X matrix
-xvTrainX1 = CalcXMatrixLiang(xv1SubBandFeat, xv1GammaBandFeat, xv1FastGammaBandFeat, ...
+xvTrainX1Liang = CalcXMatrixLiang(xv1SubBandFeat, xv1GammaBandFeat, xv1FastGammaBandFeat, ...
     N, numChannels);
 
 % Filter testing data into three frequency bands
-xv1SubBandT = filtfilt(subCoeffs, 1, xvTestingECOG1);
-xv1GammaBandT = filtfilt(gammaCoeffs, 1, xvTestingECOG1);
-xv1FastGammaBandT = filtfilt(fastGammaCoeffs, 1, xvTestingECOG1);
+xv1SubBandT = filtfilt(subCoeffs2, 1, xvTestingECOG1);
+xv1GammaBandT = filtfilt(gammaCoeffs2, 1, xvTestingECOG1);
+xv1FastGammaBandT = filtfilt(fastGammaCoeffs2, 1, xvTestingECOG1);
 
 % Calculate testing features for each band
 xv1SubBandFeatT = CalcFeaturesLiang(xv1SubBandT, numChannels, sr, winLen, winDisp);
@@ -58,38 +58,38 @@ xv1GammaBandFeatT = CalcFeaturesLiang(xv1GammaBandT, numChannels, sr, winLen, wi
 xv1FastGammaBandFeatT = CalcFeaturesLiang(xv1FastGammaBandT, numChannels, sr, winLen, winDisp);
 
 % Calculate testing X matrix
-xvTestX1 = CalcXMatrixLiang(xv1SubBandFeatT, xv1GammaBandFeatT, xv1FastGammaBandFeatT,...
+xvTestX1Liang = CalcXMatrixLiang(xv1SubBandFeatT, xv1GammaBandFeatT, xv1FastGammaBandFeatT,...
     N, numChannels);
 
 % Train linear model and make predictions
-xv1Beta = mldivide((xvTrainX1'*xvTrainX1),(xvTrainX1'*xvTrainingDS1((N+1):end,:)));
-xvYHat1 = xvTestX1*xv1Beta;
+xv1BetaLiang = mldivide((xvTrainX1Liang'*xvTrainX1Liang),(xvTrainX1Liang'*xvTrainingDS1((N+1):end,:)));
+xvYHat1Liang = xvTestX1Liang*xv1BetaLiang;
 
 % Interpolate and pad predictions to get them to be the right length to
 % compare with xvTestingDataGlove1
-lenPredictions = length(xvYHat1);
-[xv1Fing1, xv1Fing2, xv1Fing3, xv1Fing4, xv1Fing5] = deal([]);
+lenPredictions = length(xvYHat1Liang);
+[xv1Fing1Liang, xv1Fing2Liang, xv1Fing3Liang, xv1Fing4Liang, xv1Fing5Liang] = deal([]);
 % Interpolate (should end up with output that is (N-1)*50 samples too short)
-xv1Fing1 = spline(1:lenPredictions, xvYHat1(:,1), 0:1/50:(lenPredictions-1/50));
-xv1Fing2 = spline(1:lenPredictions, xvYHat1(:,2), 0:1/50:(lenPredictions-1/50));
-xv1Fing3 = spline(1:lenPredictions, xvYHat1(:,3), 0:1/50:(lenPredictions-1/50));
-xv1Fing4 = spline(1:lenPredictions, xvYHat1(:,4), 0:1/50:(lenPredictions-1/50));
-xv1Fing5 = spline(1:lenPredictions, xvYHat1(:,5), 0:1/50:(lenPredictions-1/50));
+xv1Fing1Liang = spline(1:lenPredictions, xvYHat1Liang(:,1), 0:1/50:(lenPredictions-1/50));
+xv1Fing2Liang = spline(1:lenPredictions, xvYHat1Liang(:,2), 0:1/50:(lenPredictions-1/50));
+xv1Fing3Liang = spline(1:lenPredictions, xvYHat1Liang(:,3), 0:1/50:(lenPredictions-1/50));
+xv1Fing4Liang = spline(1:lenPredictions, xvYHat1Liang(:,4), 0:1/50:(lenPredictions-1/50));
+xv1Fing5Liang = spline(1:lenPredictions, xvYHat1Liang(:,5), 0:1/50:(lenPredictions-1/50));
 % Add padding
-xv1Fing1 = [zeros(1,(N)*50) xv1Fing1];
-xv1Fing2 = [zeros(1,(N)*50) xv1Fing2];
-xv1Fing3 = [zeros(1,(N)*50) xv1Fing3];
-xv1Fing4 = [zeros(1,(N)*50) xv1Fing4];
-xv1Fing5 = [zeros(1,(N)*50) xv1Fing5];
+xv1Fing1Liang = [zeros(1,(N)*50) xv1Fing1Liang];
+xv1Fing2Liang = [zeros(1,(N)*50) xv1Fing2Liang];
+xv1Fing3Liang = [zeros(1,(N)*50) xv1Fing3Liang];
+xv1Fing4Liang = [zeros(1,(N)*50) xv1Fing4Liang];
+xv1Fing5Liang = [zeros(1,(N)*50) xv1Fing5Liang];
 
 % Compute correlation between predicted values and actual values
-xv1Fing1Corr = corr(xv1Fing1', xvTestingDataGlove1(:,1))
-xv1Fing2Corr = corr(xv1Fing2', xvTestingDataGlove1(:,2))
-xv1Fing3Corr = corr(xv1Fing3', xvTestingDataGlove1(:,3))
-xv1Fing4Corr = corr(xv1Fing4', xvTestingDataGlove1(:,4))
-xv1Fing5Corr = corr(xv1Fing5', xvTestingDataGlove1(:,5))
+xv1Fing1CorrLiang = corr(xv1Fing1Liang', xvTestingDataGlove1(:,1));
+xv1Fing2CorrLiang = corr(xv1Fing2Liang', xvTestingDataGlove1(:,2));
+xv1Fing3CorrLiang = corr(xv1Fing3Liang', xvTestingDataGlove1(:,3));
+xv1Fing4CorrLiang = corr(xv1Fing4Liang', xvTestingDataGlove1(:,4));
+xv1Fing5CorrLiang = corr(xv1Fing5Liang', xvTestingDataGlove1(:,5));
 % Compute average correlation
-xv1Corr = mean([xv1Fing1Corr xv1Fing2Corr xv1Fing3Corr xv1Fing5Corr])
+xv1CorrLiang = mean([xv1Fing1CorrLiang xv1Fing2CorrLiang xv1Fing3CorrLiang xv1Fing5CorrLiang])
 
 
 
@@ -108,9 +108,9 @@ xvTrainingDS2 = dsDG2(1:3000,:); % downsampled data glove data
 xvTestingDS2 = dsDG2(3001:end,:); % downsampled data glove data
 
 % Filter training data into three frequency bands
-xv2SubBand = filtfilt(subCoeffs, 1, xvTrainingECOG2);
-xv2GammaBand = filtfilt(gammaCoeffs, 1, xvTrainingECOG2);
-xv2FastGammaBand = filtfilt(fastGammaCoeffs, 1, xvTrainingECOG2);
+xv2SubBand = filtfilt(subCoeffs2, 1, xvTrainingECOG2);
+xv2GammaBand = filtfilt(gammaCoeffs2, 1, xvTrainingECOG2);
+xv2FastGammaBand = filtfilt(fastGammaCoeffs2, 1, xvTrainingECOG2);
 
 % Inputs into feature and X matrix calculations
 numChannels = 48; % for subject 2
@@ -125,13 +125,13 @@ xv2GammaBandFeat = CalcFeaturesLiang(xv2GammaBand, numChannels, sr, winLen, winD
 xv2FastGammaBandFeat = CalcFeaturesLiang(xv2FastGammaBand, numChannels, sr, winLen, winDisp);
 
 % Calculate training X matrix
-xvTrainX2 = CalcXMatrixLiang(xv2SubBandFeat, xv2GammaBandFeat, xv2FastGammaBandFeat, ...
+xvTrainX2Liang = CalcXMatrixLiang(xv2SubBandFeat, xv2GammaBandFeat, xv2FastGammaBandFeat, ...
     N, numChannels);
 
 % Filter testing data into three frequency bands
-xv2SubBandT = filtfilt(subCoeffs, 1, xvTestingECOG2);
-xv2GammaBandT = filtfilt(gammaCoeffs, 1, xvTestingECOG2);
-xv2FastGammaBandT = filtfilt(fastGammaCoeffs, 1, xvTestingECOG2);
+xv2SubBandT = filtfilt(subCoeffs2, 1, xvTestingECOG2);
+xv2GammaBandT = filtfilt(gammaCoeffs2, 1, xvTestingECOG2);
+xv2FastGammaBandT = filtfilt(fastGammaCoeffs2, 1, xvTestingECOG2);
 
 % Calculate testing features for each band
 xv2SubBandFeatT = CalcFeaturesLiang(xv2SubBandT, numChannels, sr, winLen, winDisp);
@@ -139,38 +139,38 @@ xv2GammaBandFeatT = CalcFeaturesLiang(xv2GammaBandT, numChannels, sr, winLen, wi
 xv2FastGammaBandFeatT = CalcFeaturesLiang(xv2FastGammaBandT, numChannels, sr, winLen, winDisp);
 
 % Calculate testing X matrix
-xvTestX2 = CalcXMatrixLiang(xv2SubBandFeatT, xv2GammaBandFeatT, xv2FastGammaBandFeatT,...
+xvTestX2Liang = CalcXMatrixLiang(xv2SubBandFeatT, xv2GammaBandFeatT, xv2FastGammaBandFeatT,...
     N, numChannels);
 
 % Train linear model and make predictions
-xv2Beta = mldivide((xvTrainX2'*xvTrainX2),(xvTrainX2'*xvTrainingDS2((N+1):end,:)));
-xvYHat2 = xvTestX2*xv2Beta;
+xv2BetaLiang = mldivide((xvTrainX2Liang'*xvTrainX2Liang),(xvTrainX2Liang'*xvTrainingDS2((N+1):end,:)));
+xvYHat2Liang = xvTestX2Liang*xv2BetaLiang;
 
 % Interpolate and pad predictions to get them to be the right length to
 % compare with xvTestingDataGlove2
-lenPredictions = length(xvYHat2);
-[xv2Fing1, xv2Fing2, xv2Fing3, xv2Fing4, xv2Fing5] = deal([]);
+lenPredictions = length(xvYHat2Liang);
+[xv2Fing1Liang, xv2Fing2Liang, xv2Fing3Liang, xv2Fing4Liang, xv2Fing5Liang] = deal([]);
 % Interpolate (should end up with output that is (N-1)*50 samples too short)
-xv2Fing1 = spline(1:lenPredictions, xvYHat2(:,1), 0:1/50:(lenPredictions-1/50));
-xv2Fing2 = spline(1:lenPredictions, xvYHat2(:,2), 0:1/50:(lenPredictions-1/50));
-xv2Fing3 = spline(1:lenPredictions, xvYHat2(:,3), 0:1/50:(lenPredictions-1/50));
-xv2Fing4 = spline(1:lenPredictions, xvYHat2(:,4), 0:1/50:(lenPredictions-1/50));
-xv2Fing5 = spline(1:lenPredictions, xvYHat2(:,5), 0:1/50:(lenPredictions-1/50));
+xv2Fing1Liang = spline(1:lenPredictions, xvYHat2Liang(:,1), 0:1/50:(lenPredictions-1/50));
+xv2Fing2Liang = spline(1:lenPredictions, xvYHat2Liang(:,2), 0:1/50:(lenPredictions-1/50));
+xv2Fing3Liang = spline(1:lenPredictions, xvYHat2Liang(:,3), 0:1/50:(lenPredictions-1/50));
+xv2Fing4Liang = spline(1:lenPredictions, xvYHat2Liang(:,4), 0:1/50:(lenPredictions-1/50));
+xv2Fing5Liang = spline(1:lenPredictions, xvYHat2Liang(:,5), 0:1/50:(lenPredictions-1/50));
 % Add padding
-xv2Fing1 = [zeros(1,(N)*50) xv2Fing1];
-xv2Fing2 = [zeros(1,(N)*50) xv2Fing2];
-xv2Fing3 = [zeros(1,(N)*50) xv2Fing3];
-xv2Fing4 = [zeros(1,(N)*50) xv2Fing4];
-xv2Fing5 = [zeros(1,(N)*50) xv2Fing5];
+xv2Fing1Liang = [zeros(1,(N)*50) xv2Fing1Liang];
+xv2Fing2Liang = [zeros(1,(N)*50) xv2Fing2Liang];
+xv2Fing3Liang = [zeros(1,(N)*50) xv2Fing3Liang];
+xv2Fing4Liang = [zeros(1,(N)*50) xv2Fing4Liang];
+xv2Fing5Liang = [zeros(1,(N)*50) xv2Fing5Liang];
 
 % Compute correlation between predicted values and actual values
-xv2Fing1Corr = corr(xv2Fing1', xvTestingDataGlove2(:,1))
-xv2Fing2Corr = corr(xv2Fing2', xvTestingDataGlove2(:,2))
-xv2Fing3Corr = corr(xv2Fing3', xvTestingDataGlove2(:,3))
-xv2Fing4Corr = corr(xv2Fing4', xvTestingDataGlove2(:,4))
-xv2Fing5Corr = corr(xv2Fing5', xvTestingDataGlove2(:,5))
+xv2Fing1CorrLiang = corr(xv2Fing1Liang', xvTestingDataGlove2(:,1));
+xv2Fing2CorrLiang = corr(xv2Fing2Liang', xvTestingDataGlove2(:,2));
+xv2Fing3CorrLiang = corr(xv2Fing3Liang', xvTestingDataGlove2(:,3));
+xv2Fing4CorrLiang = corr(xv2Fing4Liang', xvTestingDataGlove2(:,4));
+xv2Fing5CorrLiang = corr(xv2Fing5Liang', xvTestingDataGlove2(:,5));
 % Compute average correlation
-xv2Corr = mean([xv2Fing1Corr xv2Fing2Corr xv2Fing3Corr xv2Fing5Corr])
+xv2CorrLiang = mean([xv2Fing1CorrLiang xv2Fing2CorrLiang xv2Fing3CorrLiang xv2Fing5CorrLiang])
 
 
 
@@ -189,9 +189,9 @@ xvTrainingDS3 = dsDG3(1:3000,:); % downsampled data glove data
 xvTestingDS3 = dsDG3(3001:end,:); % downsampled data glove data
 
 % Filter training data into three frequency bands
-xv3SubBand = filtfilt(subCoeffs, 1, xvTrainingECOG3);
-xv3GammaBand = filtfilt(gammaCoeffs, 1, xvTrainingECOG3);
-xv3FastGammaBand = filtfilt(fastGammaCoeffs, 1, xvTrainingECOG3);
+xv3SubBand = filtfilt(subCoeffs2, 1, xvTrainingECOG3);
+xv3GammaBand = filtfilt(gammaCoeffs2, 1, xvTrainingECOG3);
+xv3FastGammaBand = filtfilt(fastGammaCoeffs2, 1, xvTrainingECOG3);
 
 % Inputs into feature and X matrix calculations
 numChannels = 64; % for subject 3
@@ -206,13 +206,13 @@ xv3GammaBandFeat = CalcFeaturesLiang(xv3GammaBand, numChannels, sr, winLen, winD
 xv3FastGammaBandFeat = CalcFeaturesLiang(xv3FastGammaBand, numChannels, sr, winLen, winDisp);
 
 % Calculate training X matrix
-xvTrainX3 = CalcXMatrixLiang(xv3SubBandFeat, xv3GammaBandFeat, xv3FastGammaBandFeat, ...
+xvTrainX3Liang = CalcXMatrixLiang(xv3SubBandFeat, xv3GammaBandFeat, xv3FastGammaBandFeat, ...
     N, numChannels);
 
 % Filter testing data into three frequency bands
-xv3SubBandT = filtfilt(subCoeffs, 1, xvTestingECOG3);
-xv3GammaBandT = filtfilt(gammaCoeffs, 1, xvTestingECOG3);
-xv3FastGammaBandT = filtfilt(fastGammaCoeffs, 1, xvTestingECOG3);
+xv3SubBandT = filtfilt(subCoeffs2, 1, xvTestingECOG3);
+xv3GammaBandT = filtfilt(gammaCoeffs2, 1, xvTestingECOG3);
+xv3FastGammaBandT = filtfilt(fastGammaCoeffs2, 1, xvTestingECOG3);
 
 % Calculate testing features for each band
 xv3SubBandFeatT = CalcFeaturesLiang(xv3SubBandT, numChannels, sr, winLen, winDisp);
@@ -220,49 +220,126 @@ xv3GammaBandFeatT = CalcFeaturesLiang(xv3GammaBandT, numChannels, sr, winLen, wi
 xv3FastGammaBandFeatT = CalcFeaturesLiang(xv3FastGammaBandT, numChannels, sr, winLen, winDisp);
 
 % Calculate testing X matrix
-xvTestX3 = CalcXMatrixLiang(xv3SubBandFeatT, xv3GammaBandFeatT, xv3FastGammaBandFeatT,...
+xvTestX3Liang = CalcXMatrixLiang(xv3SubBandFeatT, xv3GammaBandFeatT, xv3FastGammaBandFeatT,...
     N, numChannels);
 
 % Train linear model and make predictions
-xv3Beta = mldivide((xvTrainX3'*xvTrainX3),(xvTrainX3'*xvTrainingDS3((N+1):end,:)));
-xvYHat3 = xvTestX3*xv3Beta;
+xv3BetaLiang = mldivide((xvTrainX3Liang'*xvTrainX3Liang),(xvTrainX3Liang'*xvTrainingDS3((N+1):end,:)));
+xvYHat3Liang = xvTestX3Liang*xv3BetaLiang;
 
 % Interpolate and pad predictions to get them to be the right length to
 % compare with xvTestingDataGlove3
-lenPredictions = length(xvYHat3);
-[xv3Fing1, xv3Fing2, xv3Fing3, xv3Fing4, xv3Fing5] = deal([]);
+lenPredictions = length(xvYHat3Liang);
+[xv3Fing1Liang, xv3Fing2Liang, xv3Fing3Liang, xv3Fing4Liang, xv3Fing5Liang] = deal([]);
 % Interpolate (should end up with output that is (N-1)*50 samples too short)
-xv3Fing1 = spline(1:lenPredictions, xvYHat3(:,1), 0:1/50:(lenPredictions-1/50));
-xv3Fing2 = spline(1:lenPredictions, xvYHat3(:,2), 0:1/50:(lenPredictions-1/50));
-xv3Fing3 = spline(1:lenPredictions, xvYHat3(:,3), 0:1/50:(lenPredictions-1/50));
-xv3Fing4 = spline(1:lenPredictions, xvYHat3(:,4), 0:1/50:(lenPredictions-1/50));
-xv3Fing5 = spline(1:lenPredictions, xvYHat3(:,5), 0:1/50:(lenPredictions-1/50));
+xv3Fing1Liang = spline(1:lenPredictions, xvYHat3Liang(:,1), 0:1/50:(lenPredictions-1/50));
+xv3Fing2Liang = spline(1:lenPredictions, xvYHat3Liang(:,2), 0:1/50:(lenPredictions-1/50));
+xv3Fing3Liang = spline(1:lenPredictions, xvYHat3Liang(:,3), 0:1/50:(lenPredictions-1/50));
+xv3Fing4Liang = spline(1:lenPredictions, xvYHat3Liang(:,4), 0:1/50:(lenPredictions-1/50));
+xv3Fing5Liang = spline(1:lenPredictions, xvYHat3Liang(:,5), 0:1/50:(lenPredictions-1/50));
 % Add padding
-xv3Fing1 = [zeros(1,(N)*50) xv3Fing1];
-xv3Fing2 = [zeros(1,(N)*50) xv3Fing2];
-xv3Fing3 = [zeros(1,(N)*50) xv3Fing3];
-xv3Fing4 = [zeros(1,(N)*50) xv3Fing4];
-xv3Fing5 = [zeros(1,(N)*50) xv3Fing5];
+xv3Fing1Liang = [zeros(1,(N)*50) xv3Fing1Liang];
+xv3Fing2Liang = [zeros(1,(N)*50) xv3Fing2Liang];
+xv3Fing3Liang = [zeros(1,(N)*50) xv3Fing3Liang];
+xv3Fing4Liang = [zeros(1,(N)*50) xv3Fing4Liang];
+xv3Fing5Liang = [zeros(1,(N)*50) xv3Fing5Liang];
 
 % Compute correlation between predicted values and actual values
-xv3Fing1Corr = corr(xv3Fing1', xvTestingDataGlove3(:,1))
-xv3Fing2Corr = corr(xv3Fing2', xvTestingDataGlove3(:,2))
-xv3Fing3Corr = corr(xv3Fing3', xvTestingDataGlove3(:,3))
-xv3Fing4Corr = corr(xv3Fing4', xvTestingDataGlove3(:,4))
-xv3Fing5Corr = corr(xv3Fing5', xvTestingDataGlove3(:,5))
+xv3Fing1CorrLiang = corr(xv3Fing1Liang', xvTestingDataGlove3(:,1));
+xv3Fing2CorrLiang = corr(xv3Fing2Liang', xvTestingDataGlove3(:,2));
+xv3Fing3CorrLiang = corr(xv3Fing3Liang', xvTestingDataGlove3(:,3));
+xv3Fing4CorrLiang = corr(xv3Fing4Liang', xvTestingDataGlove3(:,4));
+xv3Fing5CorrLiang = corr(xv3Fing5Liang', xvTestingDataGlove3(:,5));
 % Compute average correlation
-xv3Corr = mean([xv3Fing1Corr xv3Fing2Corr xv3Fing3Corr xv3Fing5Corr])
+xv3CorrLiang = mean([xv3Fing1CorrLiang xv3Fing2CorrLiang xv3Fing3CorrLiang xv3Fing5CorrLiang])
 
 
 
+
+
+%% Moving average (post-processing)
+
+sr = 1000; % sample rate
+winLen = 150/1e3; % 150ms window
+winSamples = winLen*sr; % number of samples in window
+
+% filter coefficient vectors
+a = 1;
+b = ones(1,winSamples)/winSamples;
+
+% filter all finger data
+% Subject 1
+xv1Fing1FilteredLiang = filtfilt(b,a,xv1Fing1Liang);
+xv1Fing2FilteredLiang = filtfilt(b,a,xv1Fing2Liang);
+xv1Fing3FilteredLiang = filtfilt(b,a,xv1Fing3Liang);
+xv1Fing4FilteredLiang = filtfilt(b,a,xv1Fing4Liang);
+xv1Fing5FilteredLiang = filtfilt(b,a,xv1Fing5Liang);
+% Subject 2
+xv2Fing1FilteredLiang = filtfilt(b,a,xv2Fing1Liang);
+xv2Fing2FilteredLiang = filtfilt(b,a,xv2Fing2Liang);
+xv2Fing3FilteredLiang = filtfilt(b,a,xv2Fing3Liang);
+xv2Fing4FilteredLiang = filtfilt(b,a,xv2Fing4Liang);
+xv2Fing5FilteredLiang = filtfilt(b,a,xv2Fing5Liang);
+% Subject 3
+xv3Fing1FilteredLiang = filtfilt(b,a,xv3Fing1Liang);
+xv3Fing2FilteredLiang = filtfilt(b,a,xv3Fing2Liang);
+xv3Fing3FilteredLiang = filtfilt(b,a,xv3Fing3Liang);
+xv3Fing4FilteredLiang = filtfilt(b,a,xv3Fing4Liang);
+xv3Fing5FilteredLiang = filtfilt(b,a,xv3Fing5Liang);
+
+
+
+%% New correlations (filtered)
+
+% Subject 1
+% Compute correlation between predicted/filtered values and actual values
+xv1Fing1FilteredLiangCorr = corr(xv1Fing1FilteredLiang', xvTestingDataGlove1(:,1));
+xv1Fing2FilteredLiangCorr = corr(xv1Fing2FilteredLiang', xvTestingDataGlove1(:,2));
+xv1Fing3FilteredLiangCorr = corr(xv1Fing3FilteredLiang', xvTestingDataGlove1(:,3));
+xv1Fing4FilteredLiangCorr = corr(xv1Fing4FilteredLiang', xvTestingDataGlove1(:,4));
+xv1Fing5FilteredLiangCorr = corr(xv1Fing5FilteredLiang', xvTestingDataGlove1(:,5));
+% Compute average correlation
+xv1CorrFilteredLiang = mean([xv1Fing1FilteredLiangCorr xv1Fing2FilteredLiangCorr...
+    xv1Fing3FilteredLiangCorr xv1Fing5FilteredLiangCorr])
+
+% Subject 2
+% Compute correlation between predicted values and actual values
+xv2Fing1FilteredLiangCorr = corr(xv2Fing1FilteredLiang', xvTestingDataGlove2(:,1));
+xv2Fing2FilteredLiangCorr = corr(xv2Fing2FilteredLiang', xvTestingDataGlove2(:,2));
+xv2Fing3FilteredLiangCorr = corr(xv2Fing3FilteredLiang', xvTestingDataGlove2(:,3));
+xv2Fing4FilteredLiangCorr = corr(xv2Fing4FilteredLiang', xvTestingDataGlove2(:,4));
+xv2Fing5FilteredLiangCorr = corr(xv2Fing5FilteredLiang', xvTestingDataGlove2(:,5));
+% Compute average correlation
+xv2CorrFilteredLiang = mean([xv2Fing1FilteredLiangCorr xv2Fing2FilteredLiangCorr...
+    xv2Fing3FilteredLiangCorr xv2Fing5FilteredLiangCorr])
+
+% Subject 3
+xv3Fing1FilteredLiangCorr = corr(xv3Fing1FilteredLiang', xvTestingDataGlove3(:,1));
+xv3Fing2FilteredLiangCorr = corr(xv3Fing2FilteredLiang', xvTestingDataGlove3(:,2));
+xv3Fing3FilteredLiangCorr = corr(xv3Fing3FilteredLiang', xvTestingDataGlove3(:,3));
+xv3Fing4FilteredLiangCorr = corr(xv3Fing4FilteredLiang', xvTestingDataGlove3(:,4));
+xv3Fing5FilteredLiangCorr = corr(xv3Fing5FilteredLiang', xvTestingDataGlove3(:,5));
+% Compute average correlation
+xv3CorrFilteredLiang = mean([xv3Fing1FilteredLiangCorr xv3Fing2FilteredLiangCorr...
+    xv3Fing3FilteredLiangCorr xv3Fing5FilteredLiangCorr])
+
+
+%% Overall cross-validation score (filtered)
+xvCorrFilteredLiang = mean([xv3Fing1FilteredLiangCorr xv3Fing2FilteredLiangCorr xv3Fing3FilteredLiangCorr...
+    xv3Fing5FilteredLiangCorr xv2Fing1FilteredLiangCorr xv2Fing2FilteredLiangCorr xv2Fing3FilteredLiangCorr...
+    xv2Fing5FilteredLiangCorr xv1Fing1FilteredLiangCorr xv1Fing2FilteredLiangCorr xv1Fing3FilteredLiangCorr...
+    xv1Fing5FilteredLiangCorr])
 
 
 
 
 %% Overall cross-validation score
-xvCorr = mean([xv3Fing1Corr xv3Fing2Corr xv3Fing3Corr xv3Fing5Corr xv2Fing1Corr...
-    xv2Fing2Corr xv2Fing3Corr xv2Fing5Corr xv1Fing1Corr xv1Fing2Corr ...
-    xv1Fing3Corr xv1Fing5Corr])
+xvCorrLiang = mean([xv3Fing1CorrLiang xv3Fing2CorrLiang xv3Fing3CorrLiang xv3Fing5CorrLiang xv2Fing1CorrLiang...
+    xv2Fing2CorrLiang xv2Fing3CorrLiang xv2Fing5CorrLiang xv1Fing1CorrLiang xv1Fing2CorrLiang ...
+    xv1Fing3CorrLiang xv1Fing5CorrLiang])
+
+
+
 
 
 
@@ -270,44 +347,9 @@ xvCorr = mean([xv3Fing1Corr xv3Fing2Corr xv3Fing3Corr xv3Fing5Corr xv2Fing1Corr.
 
 % Subject 1 finger 1
 figure
-plot(xv1Fing2)
+plot(xv1Fing2Liang)
 hold on
 plot(xvTestingDataGlove1(:,2))
 hold off
 
 
-%% 
-
-subplot(5,1,1)
-plot(0:12/200:(24-12/200),dsDG1(1:400,1))
-xlim([0 24])
-ax = gca;
-ax.XTick = [0 2 4 6 8 10 12 14 16 18 20 22 24];
-subplot(5,1,2)
-plot(0:12/200:(24-12/200),dsDG1(1:400,2))
-xlim([0 24])
-ax = gca;
-ax.XTick = [0 2 4 6 8 10 12 14 16 18 20 22 24];
-subplot(5,1,3)
-plot(0:12/200:(24-12/200),dsDG1(1:400,3))
-xlim([0 24])
-ax = gca;
-ax.XTick = [0 2 4 6 8 10 12 14 16 18 20 22 24];
-subplot(5,1,4)
-plot(0:12/200:(24-12/200),dsDG1(1:400,4))
-xlim([0 24])
-ax = gca;
-ax.XTick = [0 2 4 6 8 10 12 14 16 18 20 22 24];
-subplot(5,1,5)
-plot(0:12/200:(24-12/200),dsDG1(1:400,5))
-xlim([0 24])
-ax = gca;
-ax.XTick = [0 2 4 6 8 10 12 14 16 18 20 22 24];
-
-
-%%
-plot(0:1/50:(lenPredictions-1/50),spline(1:lenPredictions, yhat3Fing1, 0:1/50:(lenPredictions-1/50)))
-hold on
-plot(yhat3Fing1)
-hold off
-legend('Splined','Original')
