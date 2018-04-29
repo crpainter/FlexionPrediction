@@ -2,9 +2,12 @@
 % regression (optimal linear decoder) model. 
 %
 % Inputs are:
-% - features = an array containing all the feature matrices for this
-% subject; make sure that the number of rows of 'features' equals
-% 'numChannels'
+% - band1Feat = sub band (1-60Hz) features; make sure that the number of 
+% rows of 'band1Feat' equals 'numChannels'
+% - band2Feat = gamma band (60-100Hz) features; make sure that the number of 
+% rows of 'band2Feat' equals 'numChannels'
+% - band3Feat = fast gamma band (100-200Hz) features; make sure that the number of 
+% rows of 'band3Feat' equals 'numChannels'
 % - nTimeBins = the number of time bins preceding the current moment
 % - numChannels = the number of channels for this subject
 %
@@ -27,9 +30,9 @@ function x = CalcXMatrixLiang(band1Feat,band2Feat,band3Feat,nTimeBins,numChannel
         for j = 1:v
 
             % Add N values from each feature matrix, at row j
-            currRow = [currRow band1Feat(j,i:(i+2))];
-            currRow = [currRow band2Feat(j,i:(i+2))];
-            currRow = [currRow band3Feat(j,i:(i+2))];
+            currRow = [currRow band1Feat(j,i:(i+N-1))];
+            currRow = [currRow band2Feat(j,i:(i+N-1))];
+            currRow = [currRow band3Feat(j,i:(i+N-1))];
 
         end
 

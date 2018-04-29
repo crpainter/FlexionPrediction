@@ -1,25 +1,22 @@
-% This function can be used to calculate the features matrices for each
-% subject for whom we have ECoG data.
+% This function can be used to compute the sum-squared-voltage for each
+% frequency band of an ECoG signal that is passed into the function. Each
+% set of ECoG data has been decomposed into three bands: 1) sub band
+% (1-60Hz), 2) gamma band (60-100Hz), 3) fast gamma band (100-200Hz). Each
+% band is separately passed in as the "ecogData" argument in this function.
+% We calculate the same sum-squared-voltage function for all the windows in
+% ecogData.
 % 
-% The six features we are using are the same as what are recommended in the
-% assignment:
-% 1) average time-domain voltage
-% 2) average frequency-domain magnitude in the 5-15 Hz frequency band
-% 3) average frequency-domain magnitude in the 20-25 Hz frequency band
-% 4) average frequency-domain magnitude in the 75-115 Hz frequency band
-% 5) average frequency-domain magnitude in the 125-160 Hz frequency band
-% 6) average frequency-domain magnitude in the 160-175 Hz frequency band
-%
 % Inputs are:
-% - ecogData = raw ECoG data for this subject
+% - ecogData = band-pass-filtered ECoG data for this subject
 % - numChannels = number of channels for this subject
 % - sr = sample rate for 'ecogData'
 % - winLen = window length in seconds
 % - winDisp = window displacement in seconds
 %
-% Outputs are: 6 feature matrices for this subject (feat1, feat2, feat3,
-% feat4, feat5, feat6), where each feature corresponds to the feature
-% descriptions above
+% Output is: 
+% - 1 feature matrix for this subject (feat1), which contains
+% the output of the sum-squared-voltage for each time window within
+% ecogData
 
 function [feat1] = CalcFeaturesLiang(ecogBandData, numChannels, sr, winLen, winDisp)
 

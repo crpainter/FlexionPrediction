@@ -2,9 +2,8 @@
 % regression (optimal linear decoder) model. 
 %
 % Inputs are:
-% - features = an array containing all the feature matrices for this
-% subject; make sure that the number of rows of 'features' equals
-% 'numChannels'
+% - features = all the feature matrices for this subject; make sure that 
+% the number of rows for each feature matrix equals 'numChannels'
 % - nTimeBins = the number of time bins preceding the current moment
 % - numChannels = the number of channels for this subject
 %
@@ -33,8 +32,6 @@ function x = CalcXMatrix(feat1,feat2,feat3,feat4,feat5,feat6,nTimeBins,numChanne
             currRow = [currRow feat4(j,i:(i+2))];
             currRow = [currRow feat5(j,i:(i+2))];
             currRow = [currRow feat6(j,i:(i+2))];
-            %currRow = [currRow feat7(j,i:(i+2))];
-            %currRow = [currRow feat8(j,i:(i+2))];
 
         end
 

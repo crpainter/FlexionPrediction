@@ -48,8 +48,6 @@ function [feat1,feat2,feat3,feat4,feat5,feat6] = CalcFeatures(ecogData, numChann
         result4 = mean(abs(s(75:115,:))); % feature 4
         result5 = mean(abs(s(125:160,:))); % feature 5
         result6 = mean(abs(s(160:175,:))); % feature 6
-        %result7 = sum(abs(s(100:200,:)).^2); % feature 7
-        %result8 = sum(abs(s(75:115,:)).^2); % feature 8
 
         % Add result to each feature matrix
         feat2 = [feat2; result2];
@@ -57,18 +55,7 @@ function [feat1,feat2,feat3,feat4,feat5,feat6] = CalcFeatures(ecogData, numChann
         feat4 = [feat4; result4];
         feat5 = [feat5; result5];
         feat6 = [feat6; result6];
-        %feat7 = [feat7; result7];
-        %feat8 = [feat8; result8];
     
     end
-%     
-%     % Feature 7: Sum squared voltage in each window
-%     SumSqVoltage = @(signal) sum(signal.^2); % function
-%     for i = 1:numChannels    
-%         % Use MovingWinFeats to calculate SumSqVoltage for each channel for
-%         % this subject
-%         result1 = MovingWinFeats(ecogData(:,i),sr,winLen,winDisp,SumSqVoltage);
-%         feat7 = [feat7; result1];  
-%     end
     
 end
